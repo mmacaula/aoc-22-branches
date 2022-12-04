@@ -2,16 +2,30 @@
 
 class Game {
 
-    enum class Play( val elfPlay: String, val myPlay: String, val point : Int) {
-        ROCK("A", "X", 1),
-        PAPER("B", "Y", 2),
-        SCISSORS("C", "Z", 3);
+    enum class Play( val elfPlay: String, val point : Int) {
+        ROCK("A", 1),
+        PAPER("B", 2),
+        SCISSORS("C", 3);
 
         companion object {
             fun getPlay(value: String) : Play {
                 return values().find {
-                    it.elfPlay == value || it.myPlay == value
+                    it.elfPlay == value;
                 }!!
+            }
+            fun getStrategyPlay(elfPlay: Play, value : String) : Play {
+                return values().find(fun(it: Play):Boolean {
+                    if (value == "X") {
+                        return !it.isTie(elfPlay) && !it.wins(elfPlay)
+                    }
+                    if (value == "Y") {
+                        return it.isTie(elfPlay)
+                    }
+                    if (value == "Z") {
+                        return it.wins(elfPlay)
+                    }
+                    return false;
+                })!!
             }
         }
 

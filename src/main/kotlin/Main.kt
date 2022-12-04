@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     val scores = lines.map {
         val (elf, me) = it.split(" ");
         val elfPlay = Companion.getPlay(elf)
-        val myPlay = Companion.getPlay(me)
+        val myPlay = Companion.getStrategyPlay(elfPlay, me)
         println("$elfPlay: $myPlay")
         myPlay.score(elfPlay)
     }
