@@ -3,22 +3,38 @@ import java.io.File
 import Game.Play.*
 
 fun main(args: Array<String>) {
-    println("Hello World!")
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
-    val lines = (File("02input.txt").readLines())
-
-    val scores = lines.map {
-        val (elf, me) = it.split(" ");
-        val elfPlay = Companion.getPlay(elf)
-        val myPlay = Companion.getStrategyPlay(elfPlay, me)
-        println("$elfPlay: $myPlay")
-        myPlay.score(elfPlay)
+    val lines = (File("05input.txt").readLines())
+    val compartments = lines.map { line ->
+        val first = line.substring(0, line.length / 2);
+        val second = line.substring(line.length / 2)
+//        println(line)
+//        println("$first : $second")
+        listOf(first, second)
     }
-    val total = scores.sum();
 
+    val found = compartments.map{ (first, second) ->
+       println("ummm $first : $second")
+       first.find { firstChar ->
+            val found = second.find { secondChar ->
+                firstChar == secondChar
+            }
+            (found != null)
+        }
+    }
 
-    println("results = $scores, total: $total")
+    val priorityMap = HashMap<Char,Int>()
+    var value = 1;
+    for (i in 'a' .. 'z'){
+        priorityMap[i] = value++;
+    }
+    for (i in 'A' .. 'Z'){
+        priorityMap[i] = value++;
+    }
+    println(priorityMap)
+    val ranking = found.map {
+        priorityMap[it]!!
+    }.sum()
+    println("results = $ranking")
+
 }
