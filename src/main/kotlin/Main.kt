@@ -1,43 +1,24 @@
 import java.io.File
 
+import Game.Play.*
+
 fun main(args: Array<String>) {
     println("Hello World!")
 
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
-    val lines = (File("01input.txt").readLines())
-//    {
-//        File("01input.txt").forEachLine {
-//        println(it)
-//    }
-//    lines
+    val lines = (File("02input.txt").readLines())
 
-    val groupedByElf : ArrayList<ArrayList<String>> = lines.fold(
-        ArrayList(ArrayList()),
-        fun(acc: ArrayList<ArrayList<String>>, line: String): ArrayList<ArrayList<String>> {
-            if(acc.isEmpty()){
-                acc.add(ArrayList())
-            }
-            val last = acc.last();
-
-            println(last)
-            if(line == ""){
-                acc.add(ArrayList())
-            }else {
-                last.add(line)
-                println(last)
-            }
-            return acc
-        })
-
-    val sumCalories = groupedByElf.map {
-        it.sumOf { it.toInt() }
-    }.sortedBy{ it }
-        .reversed()
-        .subList(0,3)
-        .sum()
+    val scores = lines.map {
+        val (elf, me) = it.split(" ");
+        val elfPlay = Companion.getPlay(elf)
+        val myPlay = Companion.getPlay(me)
+        println("$elfPlay: $myPlay")
+        myPlay.score(elfPlay)
+    }
+    val total = scores.sum();
 
 
-    println("results = $sumCalories")
+    println("results = $scores, total: $total")
 }
