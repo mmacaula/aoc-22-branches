@@ -33,7 +33,10 @@ fun main(args: Array<String>) {
 
     val sumCalories = groupedByElf.map {
         it.sumOf { it.toInt() }
-    }.maxOf { it }
+    }.sortedBy{ it }
+        .reversed()
+        .subList(0,3)
+        .sum()
 
 
     println("results = $sumCalories")
