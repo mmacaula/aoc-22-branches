@@ -4,60 +4,30 @@ import Game.Play.*
 
 fun main(args: Array<String>) {
 
-    val lines = (File("05input.txt").readLines())
+    val lines = (File("04input.txt").readLines())
 //    val lines = """
-//        vJrwpWtwJgWrhcsFMMfFFhFp
-//        jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-//        PmmdzqPrVvPwwTWBwg
-//        wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-//        ttgJtRGJQctTZtZT
-//        CrZsJsPPZsGzwwsLwLmpwMDw
-//    """.trimIndent().split("\n")
-    val compartments = lines.chunked(3)
-        .map { (first, second, third) ->
-            first.find { firstChar ->
-                val found = second.find { secondChar ->
-                    val thirdFound = third.find { thirdChar ->
-                        firstChar == secondChar && secondChar == thirdChar
-                    }
-                    thirdFound != null
-                }
-                found != null
-            }
-        }
-    println(compartments)
+//2-4,6-8
+//2-3,4-5
+//5-7,7-9
+//2-8,3-7
+//6-6,4-6
+//2-6,4-8
+// """.trimIndent().split("\n")
 
-//    map { line ->
-//        val first = line.substring(0, line.length / 2);
-//        val second = line.substring(line.length / 2)
-//        println(line)
-//        println("$first : $second")
-//        listOf(first, second)
-//    }
-//
-//    val found = compartments.map{ (first, second) ->
-//       println("ummm $first : $second")
-//       first.find { firstChar ->
-//            val found = second.find { secondChar ->
-//                firstChar == secondChar
-//            }
-//            (found != null)
-//        }
-//    }
-
-    val priorityMap = HashMap<Char,Int>()
-    var value = 1;
-    for (i in 'a' .. 'z'){
-        priorityMap[i] = value++;
+    val assignments = lines.map{ it.split(",") }
+        .map{ assignments ->
+        assignments.map{  assignment -> assignment.split('-').map{it.toInt()}}
     }
-    for (i in 'A' .. 'Z'){
-        priorityMap[i] = value++;
-    }
-    println(priorityMap)
 
-    val ranking = compartments.map {
-        priorityMap[it]!!
-    }.sum()
-    println("results = $ranking")
+    val filtered = assignments.filter { pairs ->
+        val (firstPair, secondPair) = pairs;
+        val (first, second) = firstPair;
+        val (third, fourth) = secondPair;
+        val firstRange = (first .. second).toSet()
+        val secondRange = (third .. fourth).toSet()
+        firstRange.intersect(secondRange).size != 0
+    }
+
+    println("results: ${filtered}, ${filtered.size}")
 
 }
