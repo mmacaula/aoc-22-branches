@@ -1,33 +1,66 @@
 import java.io.File
 
 import Game.Play.*
+import kotlin.math.log
 
 fun main(args: Array<String>) {
 
-    val lines = (File("04input.txt").readLines())
+    val lines = (File("05input.txt").readLines())
 //    val lines = """
-//2-4,6-8
-//2-3,4-5
-//5-7,7-9
-//2-8,3-7
-//6-6,4-6
-//2-6,4-8
+//    [D]
+//[N] [C]
+//[Z] [M] [P]
+// 1   2   3
+//
+//move 1 from 2 to 1
+//move 3 from 1 to 3
+//move 2 from 2 to 1
+//move 1 from 1 to 2
 // """.trimIndent().split("\n")
 
-    val assignments = lines.map{ it.split(",") }
-        .map{ assignments ->
-        assignments.map{  assignment -> assignment.split('-').map{it.toInt()}}
+
+    val index = lines.indexOf("");
+    val stacksLines = lines.subList(0,index - 1)
+    val columnsLine = lines.subList(index-1, index)[0]
+    val instructionsLines  = lines.subList(index+1, lines.lastIndex+1)
+
+    val columns = columnsLine.split(" ").filter { it.isNotEmpty() }
+
+    val stacks = columns.map {
+        ArrayDeque<String>()
+    }
+    val rows = stacksLines.map{
+        val regex = """....?""".toRegex()
+        regex.findAll(it).map {
+            it.value.trim()
+        }.toList()
+
+    }
+    rows.forEach { row ->
+        row.forEachIndexed { i, item ->
+            if(!item.isEmpty()){
+                stacks[i].add(item.substring(1,2));
+            }
+        }
     }
 
-    val filtered = assignments.filter { pairs ->
-        val (firstPair, secondPair) = pairs;
-        val (first, second) = firstPair;
-        val (third, fourth) = secondPair;
-        val firstRange = (first .. second).toSet()
-        val secondRange = (third .. fourth).toSet()
-        firstRange.intersect(secondRange).size != 0
+    println("Stacks: ${instructionsLines}")
+    val instructions = instructionsLines.map{
+        val words = it.split(" ")
+        listOf(words[1].toInt(), words[3].toInt()-1, words[5].toInt()-1)
+    }.forEach{ instruction ->
+        val (times, from, to ) = instruction;
+        repeat(times){
+            val item = stacks[from].removeFirst()
+            stacks[to].addFirst(item)
+//            println("after move ${it} instruction ${instruction}: $stacks")
+        }
     }
+    val result = stacks.map {
+        it.removeFirst()
+    }.joinToString("") { it }
 
-    println("results: ${filtered}, ${filtered.size}")
+
+    println("columns: ${result}")
 
 }
