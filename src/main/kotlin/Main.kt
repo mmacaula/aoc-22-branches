@@ -44,17 +44,21 @@ fun main(args: Array<String>) {
         }
     }
 
-    println("Stacks: ${instructionsLines}")
+    println("Stacks: ${stacks}")
     val instructions = instructionsLines.map{
         val words = it.split(" ")
         listOf(words[1].toInt(), words[3].toInt()-1, words[5].toInt()-1)
     }.forEach{ instruction ->
         val (times, from, to ) = instruction;
-        repeat(times){
-            val item = stacks[from].removeFirst()
-            stacks[to].addFirst(item)
-//            println("after move ${it} instruction ${instruction}: $stacks")
-        }
+
+        val items = stacks[from].subList(0,times).toList()
+        println("items: $items")
+        repeat(times){ stacks[from].removeFirst()}
+        println("from: ${stacks[from]}")
+        println("items: $items")
+        stacks[to].addAll(0, items)
+        println("items: $items")
+        println("after move instruction ${instruction}: $stacks")
     }
     val result = stacks.map {
         it.removeFirst()
