@@ -1,4 +1,3 @@
-import Game.Play.*
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -15,7 +14,57 @@ fun main(args: Array<String>) {
 //    val lines = test;
     val lines = input;
 
-    fun isVisible(lines: List<String>, x: Int, y: Int) : Boolean{
+    fun getXDistance(lines: List<String>, x: Int, y: Int, range: IntProgression, reason : String): Int {
+        fun getHeight(x:Int,y:Int): Int{
+            return lines[y][x].toString().toInt()
+        }
+        fun printDistance(distance: Int, ){
+            println("char ${lines[y][x]} at $x, $y has distance: $distance $reason" )
+        }
+        val treeHeight = getHeight(x,y)
+        var distance = 0;
+        range.forEachIndexed { index, i ->
+            if (getHeight(i, y) < treeHeight ){
+                distance++
+            }
+            else{
+                println("getHeight($i, $y) < treeHeight: ${getHeight(i, y)} < $treeHeight")
+                distance++
+                printDistance(distance)
+                return distance
+            }
+        }
+        printDistance(distance)
+        return distance
+    }
+
+    fun getYDistance(lines: List<String>, x: Int, y: Int, range: IntProgression, reason:String): Int {
+        fun getHeight(x:Int,y:Int): Int{
+            return lines[y][x].toString().toInt()
+        }
+        fun printDistance(distance: Int){
+            println("char ${lines[y][x]} at $x, $y has distance: $distance $reason" )
+        }
+        val treeHeight = getHeight(x,y)
+        var distance = 0;
+        println(range)
+        range.forEachIndexed { index, i ->
+            if (getHeight(x, i) < treeHeight ){
+//                println("getHeight($x, $i) < treeHeight: ${getHeight(x, i)} < $treeHeight")
+                distance++
+            }
+            else{
+                println("getHeight($x, $i) < treeHeight: ${getHeight(x, i)} < $treeHeight")
+                distance++
+                printDistance(distance)
+                return distance
+            }
+        }
+        printDistance(distance)
+        return distance
+    }
+
+    fun isVisible(lines: List<String>, x: Int, y: Int) : Int{
         fun getHeight(x:Int,y:Int): Int{
             return lines[y][x].toString().toInt()
         }
@@ -25,46 +74,45 @@ fun main(args: Array<String>) {
         val height = lines.size-1;
         val length = lines[0].length-1;
         val treeHeight = getHeight(x,y)
-        if(x == 0 || x == length || y == 0 || y == height){
-            return true;
-        }
         val goingLeftRange = x-1 downTo 0
         val goingRightRange = x+1 .. length;
         val goingUpRange = y-1 downTo 0
         val goingDownRange = y +1 .. height
 
+        return getXDistance(lines, x, y, goingLeftRange, "left") * getXDistance(lines, x, y, goingRightRange, "right") * getYDistance(lines, x, y, goingUpRange, "up") * getYDistance(lines, x, y, goingDownRange, "down")
+//        if( goingLeftRange.all{ getHeight(it, y) < treeHeight } ) {
+//            printVis(true ,"left")
+//            return true
+//        }
+//        if( goingRightRange.all { getHeight(it, y) < treeHeight }) {
+//            printVis(true ,"right")
+//            return true
+//        }
+//        if( goingUpRange.all{ getHeight(x, it) < treeHeight } ) {
+//            printVis(true ,"up")
+//            return true
+//        }
+//        if( goingDownRange.all { getHeight(x, it) < treeHeight }) {
+//            printVis(true ,"down")
+//            return true
+//        }
 
 
-        if( goingLeftRange.all{ getHeight(it, y) < treeHeight } ) {
-            printVis(true ,"left")
-            return true
-        }
-        if( goingRightRange.all { getHeight(it, y) < treeHeight }) {
-            printVis(true ,"right")
-            return true
-        }
-        if( goingUpRange.all{ getHeight(x, it) < treeHeight } ) {
-            printVis(true ,"up")
-            return true
-        }
-        if( goingDownRange.all { getHeight(x, it) < treeHeight }) {
-            printVis(true ,"down")
-            return true
-        }
 
-
-
-        return false;
     }
-    var i =0;
-    lines.forEachIndexed { y: Int,  line :String ->
+    var max =0;
+
+
+    val scores = lines.forEachIndexed { y: Int,  line :String ->
         println("new line")
-        line.forEachIndexed{ x, char ->
-            if (isVisible(lines, x,y )) {
-                i++;
+        line.forEachIndexed{ x: Int, char ->
+            val score = isVisible(lines, x, y)
+            if(score > max) {
+                max = score
             }
         }
     }
-    println(i)
+
+    println(max)
 
 }
